@@ -8,11 +8,27 @@ import logging
 import grpc
 import iot_service_pb2
 import iot_service_pb2_grpc
+import json
 
 # Twin state
 current_temperature = 'void'
 current_light_level = 'void'
 led_state = {'red':0, 'green':0}
+
+#Auth
+def load_config(file_path):
+  with open(file_path, "r") as f:
+    config = json.load(f)
+  return config
+
+def auth_func(invocation_metadata):
+  config = load_config("config.json")
+  for key, value in invocation_metadata:
+    if key == 'Authorization':
+      for user in config["users"]:
+        if value == user["username"] + user["token"]:
+          return True
+  return False
 
 # Kafka consumer to run on a separate thread
 def consume_temperature():
@@ -53,8 +69,22 @@ class IoTServer(iot_service_pb2_grpc.IoTServiceServicer):
     def SayLightLevel(self, request, context):
         return iot_service_pb2.LightLevelReply(lightLevel=current_light_level)
 
+
+class AuthInterceptor(grpc.ServerInterceptor):
+  def __init__(self, auth_func):
+    self.auth_func = auth_func
+
+  def intercept_service(self, continuation, handler_call_details):
+      metadata = dict(handler_call_details.invocation_metadata)
+      if self._auth_func(metadata):
+          return continuation(handler_call_details)
+      else:
+          raise Exception("Unauthorized")
+
+
 def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10),
+                         interceptors=(AuthInterceptor(auth_func),))
     iot_service_pb2_grpc.add_IoTServiceServicer_to_server(IoTServer(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
