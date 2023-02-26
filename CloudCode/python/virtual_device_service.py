@@ -8,27 +8,13 @@ import logging
 import grpc
 import iot_service_pb2
 import iot_service_pb2_grpc
-import json
 
 # Twin state
 current_temperature = 'void'
 current_light_level = 'void'
 led_state = {'red':0, 'green':0}
 
-#Auth
-def load_config(file_path):
-  with open(file_path, "r") as f:
-    config = json.load(f)
-  return config
-
-def auth_func(invocation_metadata):
-  config = load_config("config.json")
-  for key, value in invocation_metadata:
-    if key == 'Authorization':
-      for user in config["users"]:
-        if value == user["username"] + user["token"]:
-          return True
-  return False
+users = {'user1': 'pass1', 'user2': 'pass2', 'user3': 'pass3'}
 
 # Kafka consumer to run on a separate thread
 def consume_temperature():
@@ -52,13 +38,29 @@ def produce_led_command(state, ledname):
     producer = KafkaProducer(bootstrap_servers=KAFKA_SERVER+':'+KAFKA_PORT)
     producer.send('ledcommand', key=ledname.encode(), value=str(state).encode())
     return state
+
+def authenticate_user(context):
+    # Obtém as credenciais do contexto
+    auth_info = context.invocation_metadata()
+    # Verifica se as credenciais estão presentes e se o usuário e a senha são válidos
+    if auth_info and len(auth_info) == 1:
+        user_pass = auth_info[0].split(':')
+        if user_pass[0] in users and user_pass[1] == users[user_pass[0]]:
+            return True
+    return False
         
 class IoTServer(iot_service_pb2_grpc.IoTServiceServicer):
 
     def SayTemperature(self, request, context):
+        # Check user authentication
+        if not authenticate_user(context):
+            return iot_service_pb2.TemperatureReply(temperature='Not authenticated')
         return iot_service_pb2.TemperatureReply(temperature=current_temperature)
     
     def BlinkLed(self, request, context):
+        # Check user authentication
+        if not authenticate_user(context):
+            return iot_service_pb2.LedReply(ledstate={'red': 0, 'green': 0})
         print ("Blink led ", request.ledname)
         print ("...with state ", request.state)
         produce_led_command(request.state, request.ledname)
@@ -67,6 +69,9 @@ class IoTServer(iot_service_pb2_grpc.IoTServiceServicer):
         return iot_service_pb2.LedReply(ledstate=led_state)
 
     def SayLightLevel(self, request, context):
+        # Check user authentication
+        if not authenticate_user(context):
+            return iot_service_pb2.LightLevelReply(lightLevel='Not authenticated')
         return iot_service_pb2.LightLevelReply(lightLevel=current_light_level)
 
 
@@ -83,10 +88,13 @@ class AuthInterceptor(grpc.ServerInterceptor):
 
 
 def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10),
-                         interceptors=(AuthInterceptor(auth_func),))
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     iot_service_pb2_grpc.add_IoTServiceServicer_to_server(IoTServer(), server)
     server.add_insecure_port('[::]:50051')
+
+    auth_interceptor = AuthInterceptor(authenticate_user)
+    server.intercept_service(auth_interceptor)
+
     server.start()
     server.wait_for_termination()
 
