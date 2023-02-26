@@ -92,9 +92,6 @@ def serve():
     iot_service_pb2_grpc.add_IoTServiceServicer_to_server(IoTServer(), server)
     server.add_insecure_port('[::]:50051')
 
-    auth_interceptor = AuthInterceptor(authenticate_user)
-    server.intercept_service(auth_interceptor)
-
     server.start()
     server.wait_for_termination()
 
