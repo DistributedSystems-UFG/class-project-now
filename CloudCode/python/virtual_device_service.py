@@ -87,9 +87,9 @@ def validate_token(token):
 class IoTServer(iot_service_pb2_grpc.IoTServiceServicer):
 
     def Login(self, request, context):
-        if(authenticate(request.username, request.password)):
-            print("token: ", request.token)
-            return iot_service_pb2.LoginReply(token=token)
+        token = authenticate(request.username, request.password)
+        print("token: ", token)
+        return iot_service_pb2.LoginReply(token=token)
 
 
     def SayTemperature(self, request, context):
