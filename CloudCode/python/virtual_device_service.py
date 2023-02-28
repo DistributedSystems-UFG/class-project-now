@@ -72,14 +72,14 @@ def produce_led_command(state, ledname):
 def authenticate(username, password):
     global token
     for user in users:
-        if user[username] == username and user[password] == password:
-            token = users[token]
+        if user['username'] == username and user['password'] == password:
+            token = user['token']
             return token
     raise Exception('Unauthorized')
 
 def validate_token(token):
     for user in users:
-        if user[token] == token:
+        if user['token'] == token:
             return True;
     return False
 
