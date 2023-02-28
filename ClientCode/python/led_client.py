@@ -13,6 +13,10 @@ from const import *
 def run():
     with grpc.insecure_channel(GRPC_SERVER+':'+GRPC_PORT) as channel:
         stub = iot_service_pb2_grpc.IoTServiceStub (channel)
+
+        getToken = stub.Login(iot_service_pb2.LoginRequest(username='user', password='password'))
+        print(getToken)
+
         response = stub.BlinkLed(iot_service_pb2.LedRequest(state=int(sys.argv[1]),ledname=sys.argv[2]))
 
     if response.ledstate[sys.argv[2]] == 1:

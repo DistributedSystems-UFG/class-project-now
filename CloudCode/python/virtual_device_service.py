@@ -88,7 +88,7 @@ class IoTServer(iot_service_pb2_grpc.IoTServiceServicer):
 
     def Login(self, request, context):
         authenticate(request.username, request.password)
-        print("token: ", token)
+        print("Sucess, your token: ", token)
         return iot_service_pb2.LoginReply(token=token)
 
 

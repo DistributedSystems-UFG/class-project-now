@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11iot_service.proto\x12\x0biot_service\"(\n\x12TemperatureRequest\x12\x12\n\nsensorName\x18\x01 \x01(\t\"\'\n\x10TemperatureReply\x12\x13\n\x0btemperature\x18\x01 \x01(\t\",\n\nLedRequest\x12\r\n\x05state\x18\x01 \x01(\r\x12\x0f\n\x07ledname\x18\x02 \x01(\t\"r\n\x08LedReply\x12\x35\n\x08ledstate\x18\x01 \x03(\x0b\x32#.iot_service.LedReply.LedstateEntry\x1a/\n\rLedstateEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\r:\x02\x38\x01\"\'\n\x11LightLevelRequest\x12\x12\n\nsensorName\x18\x01 \x01(\t\"%\n\x0fLightLevelReply\x12\x12\n\nlightLevel\x18\x01 \x01(\t2\xef\x01\n\nIoTService\x12R\n\x0eSayTemperature\x12\x1f.iot_service.TemperatureRequest\x1a\x1d.iot_service.TemperatureReply\"\x00\x12<\n\x08\x42linkLed\x12\x17.iot_service.LedRequest\x1a\x15.iot_service.LedReply\"\x00\x12O\n\rSayLightLevel\x12\x1e.iot_service.LightLevelRequest\x1a\x1c.iot_service.LightLevelReply\"\x00\x42\x37\n\x1bio.grpc.examples.iotserviceB\x0fIoTServiceProtoP\x01\xa2\x02\x04TEMPb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11iot_service.proto\x12\x0biot_service\"(\n\x12TemperatureRequest\x12\x12\n\nsensorName\x18\x01 \x01(\t\"\'\n\x10TemperatureReply\x12\x13\n\x0btemperature\x18\x01 \x01(\t\",\n\nLedRequest\x12\r\n\x05state\x18\x01 \x01(\r\x12\x0f\n\x07ledname\x18\x02 \x01(\t\"r\n\x08LedReply\x12\x35\n\x08ledstate\x18\x01 \x03(\x0b\x32#.iot_service.LedReply.LedstateEntry\x1a/\n\rLedstateEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\r:\x02\x38\x01\"\'\n\x11LightLevelRequest\x12\x12\n\nsensorName\x18\x01 \x01(\t\"%\n\x0fLightLevelReply\x12\x12\n\nlightLevel\x18\x01 \x01(\t\"2\n\x0cLoginRequest\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"\x1b\n\nLoginReply\x12\r\n\x05token\x18\x01 \x01(\t2\xae\x02\n\nIoTService\x12R\n\x0eSayTemperature\x12\x1f.iot_service.TemperatureRequest\x1a\x1d.iot_service.TemperatureReply\"\x00\x12<\n\x08\x42linkLed\x12\x17.iot_service.LedRequest\x1a\x15.iot_service.LedReply\"\x00\x12O\n\rSayLightLevel\x12\x1e.iot_service.LightLevelRequest\x1a\x1c.iot_service.LightLevelReply\"\x00\x12=\n\x05Login\x12\x19.iot_service.LoginRequest\x1a\x17.iot_service.LoginReply\"\x00\x42\x37\n\x1bio.grpc.examples.iotserviceB\x0fIoTServiceProtoP\x01\xa2\x02\x04TEMPb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'iot_service_pb2', globals())
@@ -37,6 +37,10 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _LIGHTLEVELREQUEST._serialized_end=318
   _LIGHTLEVELREPLY._serialized_start=320
   _LIGHTLEVELREPLY._serialized_end=357
-  _IOTSERVICE._serialized_start=360
-  _IOTSERVICE._serialized_end=599
+  _LOGINREQUEST._serialized_start=359
+  _LOGINREQUEST._serialized_end=409
+  _LOGINREPLY._serialized_start=411
+  _LOGINREPLY._serialized_end=438
+  _IOTSERVICE._serialized_start=441
+  _IOTSERVICE._serialized_end=743
 # @@protoc_insertion_point(module_scope)
