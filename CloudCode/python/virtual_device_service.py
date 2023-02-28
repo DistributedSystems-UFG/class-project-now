@@ -93,13 +93,13 @@ class IoTServer(iot_service_pb2_grpc.IoTServiceServicer):
 
 
     def SayTemperature(self, request, context):
-        if(validate_token(request.token)):
+        if(validate_token(token)):
             return iot_service_pb2.TemperatureReply(temperature=current_temperature)
         return 'Unauthorized'
 
 
     def BlinkLed(self, request, context):
-        if (validate_token(request.token) == False):
+        if (validate_token(token) == False):
             print('Unauthorized')
             return 'Unauthorized'
         print("Blink led ", request.ledname)
@@ -110,7 +110,7 @@ class IoTServer(iot_service_pb2_grpc.IoTServiceServicer):
         return iot_service_pb2.LedReply(ledstate=led_state)
 
     def SayLightLevel(self, request, context):
-        if (validate_token(request.token) == False):
+        if (validate_token(token) == False):
             print('Unauthorized')
             return 'Unauthorized'
         return iot_service_pb2.LightLevelReply(lightLevel=current_light_level)
