@@ -7,6 +7,7 @@ import iot_service_pb2
 import iot_service_pb2_grpc
 
 from const import *
+import time
 
 
 def run():
@@ -15,9 +16,11 @@ def run():
 
         getToken = stub.Login(iot_service_pb2.LoginRequest(username='user', password='password'))
         print(getToken)
-        response = stub.SayTemperature(iot_service_pb2.TemperatureRequest(sensorName='my_sensor'))
 
-    print("Temperature received: " + response.temperature)
+        while(True):
+            response = stub.SayTemperature(iot_service_pb2.TemperatureRequest(sensorName='my_sensor'))
+            print("Temperature received: " + response.temperature)
+            time.sleep(1)
 
 if __name__ == '__main__':
     logging.basicConfig()

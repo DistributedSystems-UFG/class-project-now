@@ -7,6 +7,7 @@ import iot_service_pb2
 import iot_service_pb2_grpc
 
 from const import *
+import time
 
 
 def run():
@@ -16,9 +17,10 @@ def run():
         getToken = stub.Login(iot_service_pb2.LoginRequest(username='user', password='password'))
         print(getToken)
 
-        response = stub.SayLightLevel(iot_service_pb2.LightLevelRequest(sensorName='my_sensor'))
-
-    print("Light level received: " + response.lightLevel)
+        while(True):
+            response = stub.SayLightLevel(iot_service_pb2.LightLevelRequest(sensorName='my_sensor'))
+            print("Light level received: " + response.lightLevel)
+            time.sleep(1)
 
 if __name__ == '__main__':
     logging.basicConfig()
