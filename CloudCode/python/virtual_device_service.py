@@ -87,7 +87,7 @@ def validate_token(token):
 class IoTServer(iot_service_pb2_grpc.IoTServiceServicer):
 
     def Login(self, request, context):
-        token = authenticate(request.username, request.password)
+        authenticate(request.username, request.password)
         print("token: ", token)
         return iot_service_pb2.LoginReply(token=token)
 
